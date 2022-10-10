@@ -14,10 +14,10 @@ for post_path in Path("post_files").glob('*.md'):
     output_dict["post.date"] = date_obj.strftime("%a, %b %-d, %Y")
     categories_str = "/".join(output_dict["categories"])
     datetime_str = date_obj.strftime("%Y/%m/%d")
-    url_list = [F"{baseurl_str}/{categories_str}/{datetime_str}/{n}/" for n in header_dict["short"]] # type: ignore
-    url_list.extend([F"{baseurl_str}/{categories_str}/{n}/" for n in header_dict["short"]]) # type: ignore
-    url_list.extend([F"{baseurl_str}/{datetime_str}/{n}/" for n in header_dict["short"]]) # type: ignore
-    url_list.extend([F"{baseurl_str}/{n}/" for n in header_dict["short"]]) # type: ignore
+    url_list = [F"{categories_str}/{datetime_str}/{n}/" for n in header_dict["short"]] # type: ignore
+    url_list.extend([F"{categories_str}/{n}/" for n in header_dict["short"]]) # type: ignore
+    url_list.extend([F"{datetime_str}/{n}/" for n in header_dict["short"]]) # type: ignore
+    url_list.extend([F"{n}/" for n in header_dict["short"]]) # type: ignore
     output_dict["post.url"] = url_list
     output_dict["content"] = content_str
     with open(str(post_path).replace(".md",".json").replace("post_files/","mid_post_files/"),"w") as t:
