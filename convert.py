@@ -7,7 +7,7 @@ from format import formator
 
 
 class convertor:
-    def __init__(self,baseurl_bool=False,format=formator()):
+    def __init__(self,baseurl_bool=True,format=formator()):
         self.format = format
         self.base_dict = dict()
         self.base_dict.update(self.format.base)
