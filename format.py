@@ -6,7 +6,6 @@ from markdown2 import markdown
 
 class formator:
     def __init__(self) -> None:
-        #
         self.structure = dict()
         self.base = dict()
         self.base.update(tomlkit.load(open("config.toml")))

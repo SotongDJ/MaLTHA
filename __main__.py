@@ -7,6 +7,7 @@ from generate import generator
 
 parser = argparse.ArgumentParser(description="generate webpage for github pages")
 parser.add_argument("--skip", help="skip docs process", action="store_true")
+parser.add_argument("--debug", help="debug mode", action="store_true")
 args = parser.parse_args()
 
 if args.skip:
@@ -25,7 +26,7 @@ Format = formator()
 Format.load()
 
 print("step 5: convert files into JSONs")
-Convert = convertor(format=Format)
+Convert = convertor(format=Format,baseurl_bool=False) if args.debug else convertor(format=Format)
 Convert.post()
 Convert.page()
 
