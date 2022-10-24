@@ -160,7 +160,7 @@ class convertor:
             canonical_str = header_dict["title"]
             url_list = [F"{self.baseurl_str}{n}" for n in header_dict["path"]]
             url_str = url_list[0]
-            if "skip" not in header_dict.keys():
+            if header_dict.get("skip","") != "content":
                 url_list.append(F"{self.baseurl_str}/pages{url_str}")
             page_dict = {
                 "title" : " · ".join([canonical_str,self.base_dict["base_title"]]),
@@ -168,27 +168,31 @@ class convertor:
                 "page_urls" : url_list,
                 "page_url" : url_str,
             }
-            if "skip" not in header_dict.keys():
+            type_list = ["base","layout","frame"]
+            type_in_header_list = [n for n in type_list if n in header_dict.keys()]
+            type_in_content_list = [n for n in type_in_header_list if header_dict[n] in content_dict.get("frame",dict())]
+            if header_dict.get("skip","") != "content":
                 if "content" in content_dict.keys():
                     page_dict["page_content"] = content_dict["content"]
-                elif header_dict["frame"] in content_dict["frame"].keys():
-                    page_dict["page_content"] = content_dict["frame"][header_dict["frame"]]
+                elif len(type_in_content_list) > 0:
+                    type_str = type_in_content_list[0]
+                    page_dict["page_content"] = content_dict["frame"][header_dict[type_str]]
                 else:
-                    print(F"ERROR: can get content from {canonical_str}")
-            if "layout" in header_dict.keys() and header_dict["frame"] in content_dict["frame"].keys():
-                page_dict["layout_content"] = content_dict["frame"][header_dict["frame"]]
-            if "base" in header_dict.keys():
-                page_dict["base"] = header_dict["base"]
-            if "more" in header_dict.keys():
-                page_dict["more"] = header_dict["more"]
+                    print(F"ERROR: can't get content from {canonical_str}")
+            if "layout" in header_dict.keys():
+                if header_dict["layout"] in content_dict["frame"].keys():
+                    page_dict["layout_content"] = content_dict["frame"][header_dict["layout"]]
+                else:
+                    print(F"ERROR: can't get layout from {canonical_str}")
+            page_dict.update({n:header_dict[n] for n in type_in_header_list})
+            if header_dict.get("skip","") == "list":
+                page_dict["skip_list"] = ""
             if canonical_str in pages_dict.keys():
                 print(F"ERROR: duplicate canonical_str [{canonical_str}]")
             else:
                 pages_dict[canonical_str] = page_dict
-        page_content_list = list()
-        for page_str in pages_dict.keys():
-            page_detail_dict = pages_dict[page_str]
-            page_content_list.append(self.template("format_pages_in_sidebar",page_detail_dict))
+        side_page_list = [n for n in pages_dict.values() if "skip_list" not in n.keys()]
+        page_content_list = [self.template("format_pages_in_sidebar",n) for n in side_page_list]
         self.base_dict["page_content_list"] = "".join(page_content_list)
         #
         Path("mid_files").mkdir(exist_ok=True)

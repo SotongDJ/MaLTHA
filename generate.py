@@ -59,7 +59,7 @@ class generator:
                 frame_str = base_dict["page_content"] if "base" in base_dict.keys() else self.get("layout_default")
                 base_str = frame_str.format(**base_dict).format(**base_dict)
                 short_canonical_str = page_dict["page_title"]
-                if "more" in page_dict.keys():
+                if "frame" in page_dict.keys() or "layout" in page_dict.keys():
                     base_str = base_str.format(**base_dict)
                 if "{" in base_str:
                     print(F"ERROR: need more formatting {short_canonical_str}")
