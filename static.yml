@@ -30,6 +30,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: setup submodule
+        run: |
+          git submodule init
+          git submodule update --remote
       - name: check py requirements
         run: |
           pip install -r run/requirements.txt
