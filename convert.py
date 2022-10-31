@@ -1,4 +1,3 @@
-import html
 import json
 from datetime import datetime
 from pathlib import Path
@@ -55,8 +54,7 @@ class convertor:
                 url_list.extend([F"{self.baseurl_str}/{n}/" for n in header_dict["short"]]) # type: ignore
                 url_list.append(F"{self.baseurl_str}/post/{canonical_str}/")
                 content_str = content_dict["content"]
-                preview_str = content_str.split(self.base_dict["separator_preview"])[0]
-                escaped_str = html.escape(preview_str)
+                preview_str = self.format.oneline(content_str.split(self.base_dict["separator_preview"])[0])
                 post_dict = {
                     "title" : " · ".join([header_dict["title"],self.base_dict["base_title"]]),
                     "short_list" : header_dict["short"],
@@ -72,7 +70,6 @@ class convertor:
                     "post_categories": "".join(category_content_list),
                     "content_full" : content_str,
                     "content_preview" : preview_str,
-                    "content_escaped" : escaped_str,
                 }
                 if canonical_str in posts_dict.keys():
                     print(F"ERROR: duplicate canonical_str [{canonical_str}]")  # type: ignore
