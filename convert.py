@@ -53,8 +53,12 @@ class convertor:
                 url_list.extend([F"{self.baseurl_str}/{datetime_str}/{n}/" for n in header_dict["short"]]) # type: ignore
                 url_list.extend([F"{self.baseurl_str}/{n}/" for n in header_dict["short"]]) # type: ignore
                 url_list.append(F"{self.baseurl_str}/post/{canonical_str}/")
+                post_url_str = F"{self.baseurl_str}/{datetime_str}/{canonical_str}/"
                 content_str = content_dict["content"]
-                preview_str = self.format.oneline(content_str.split(self.base_dict["separator_preview"])[0])
+                content_split_list = content_str.split(self.base_dict["separator_preview"])
+                preview_str = self.format.oneline(content_split_list[0])
+                more_word_str = self.base_dict["read_original"] if len(content_split_list) == 1 else self.base_dict["read_more"]
+                more_url_str = """<a href="{}">{}</a>""".format(post_url_str,more_word_str)
                 post_dict = {
                     "title" : " · ".join([header_dict["title"],self.base_dict["base_title"]]),
                     "short_list" : header_dict["short"],
@@ -66,10 +70,11 @@ class convertor:
                     "date_8601" : date_obj.isoformat(),
                     "post_title" : header_dict["title"],
                     "post_urls" : url_list,
-                    "post_url" : F"{self.baseurl_str}/{datetime_str}/{canonical_str}/",
+                    "post_url" : post_url_str,
                     "post_categories": "".join(category_content_list),
                     "content_full" : content_str,
                     "content_preview" : preview_str,
+                    "more_element" : more_url_str,
                 }
                 if canonical_str in posts_dict.keys():
                     print(F"ERROR: duplicate canonical_str [{canonical_str}]")  # type: ignore
