@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-from pathlib import Path
+from pathlib import Path, PosixPath
 
 from format import formator
 
@@ -15,13 +15,32 @@ class convertor:
     def template(self,input_str:str,input_dict:dict) -> str:
         return self.format.structure[input_str].format(**input_dict)
     #
+    def is_target(self,folder:PosixPath) -> bool:
+        output = folder.is_dir()
+        folder_name = str(folder.name)
+        if folder_name[0] == ".":
+            output = False
+        if folder_name[0] == "_":
+            output = False
+        if "_files" in folder_name:
+            output = False
+        if folder_name == "run":
+            output = False
+        if folder_name == "docs":
+            output = False
+        return output
+    #
     def post(self):
         posts_list = list()
         posts_dict = dict()
         categories_dict = dict()
         post_member_list = list()
         post_atom_list = list()
-        for post_path in sorted(list(Path("post_files").glob('*.*'))):
+        post_folder_list = [n for n in Path.cwd().iterdir() if self.is_target(n)]  # type: ignore
+        post_files_list = list()
+        for post_folder_PosixPath in post_folder_list:
+            post_files_list.extend(sorted(list(post_folder_PosixPath.glob('*.*'))))
+        for post_path in post_files_list:
             name_list = post_path.name.split(".")
             extention_str = name_list[-1]
             if len(name_list) > 1 and extention_str in ["md","html"]:
