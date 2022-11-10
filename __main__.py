@@ -39,4 +39,5 @@ Generate.page()
 print("step 6-3: generate categories")
 Generate.category()
 print("step 6-4: complete pagination")
-Generate.pagination()
+if Generate.base_info["paginate_format"] != "":
+    Generate.pagination()

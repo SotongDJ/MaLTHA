@@ -14,7 +14,7 @@ class generator:
         self.pages_dict = json.load(open("mid_files/page.json"))
         self.posts_list = json.load(open("mid_files/post.json"))
         self.format = format
-        self.currentISO = datetime.now(tz=timezone(timedelta(hours=8),name="UTC+8")).isoformat()
+        self.currentISO = datetime.now(tz=timezone(timedelta(hours=8),name="UTC+8")).isoformat()  # type: ignore
         print(F"Current time: {self.currentISO}")
 
     def get(self,input_str:str) -> str:

@@ -58,6 +58,7 @@ class convertor:
                         "title" : "·".join([category_str,self.base_dict["base_title"]]),
                         "category_title" : category_str,
                         "category_url" : F"{self.baseurl_str}/category/{category_str}/",
+                        "open_preview" : self.base_dict["category_preview"].format(category_str),
                     }
                     category_parent_dict[category_str] = category_child_dict
                     category_content_list.append(self.template("format_categories_in_post",category_child_dict))
@@ -80,6 +81,7 @@ class convertor:
                 more_url_str = """<a href="{}">{}</a>""".format(post_url_str,more_word_str)
                 post_dict = {
                     "title" : " · ".join([header_dict["title"],self.base_dict["base_title"]]),
+                    "open_preview" : header_dict["open_preview"],
                     "short_list" : header_dict["short"],
                     "short_canonical" : canonical_str,
                     "categories_dict" : category_parent_dict,
@@ -139,7 +141,8 @@ class convertor:
             related_list = related_order_list[:3] if len(related_order_list) > 3 else related_order_list
             related_str = "".join(related_list)
             # post_dict["related_order_list"] = related_order_list
-            post_dict["related_content"] = self.template("format_related_frame",{"related_posts_list":related_str})
+            if "format_related_frame" in self.format.structure.keys():
+                post_dict["related_content"] = self.template("format_related_frame",{"related_posts_list":related_str})
             posts_list[post_pos] = post_dict
         #
         reversed_posts_dict = {y:x for x,y in posts_dict.items()}
@@ -189,6 +192,8 @@ class convertor:
                 "page_urls" : url_list,
                 "page_url" : url_str,
             }
+            if "open_preview" in header_dict.keys():
+                page_dict["open_preview"] = header_dict["open_preview"]
             type_list = ["base","layout","frame"]
             type_in_header_list = [n for n in type_list if n in header_dict.keys()]
             type_in_content_list = [n for n in type_in_header_list if header_dict[n] in content_dict.get("frame",dict())]
