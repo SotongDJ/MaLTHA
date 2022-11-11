@@ -58,7 +58,7 @@ class convertor:
                         "title" : "·".join([category_str,self.base_dict["base_title"]]),
                         "category_title" : category_str,
                         "category_url" : F"{self.baseurl_str}/category/{category_str}/",
-                        "open_preview" : self.base_dict["category_preview"].format(category_str),
+                        "opengraph_description" : self.base_dict["category_preview"].format(category_str),
                     }
                     category_parent_dict[category_str] = category_child_dict
                     category_content_list.append(self.template("format_categories_in_post",category_child_dict))
@@ -79,9 +79,8 @@ class convertor:
                 preview_str = self.format.oneline(content_split_list[0])
                 more_word_str = self.base_dict["read_original"] if len(content_split_list) == 1 else self.base_dict["read_more"]
                 more_url_str = """<a href="{}">{}</a>""".format(post_url_str,more_word_str)
-                post_dict = {
+                post_detail_dict = {
                     "title" : " · ".join([header_dict["title"],self.base_dict["base_title"]]),
-                    "open_preview" : header_dict["open_preview"],
                     "short_list" : header_dict["short"],
                     "short_canonical" : canonical_str,
                     "categories_dict" : category_parent_dict,
@@ -97,6 +96,9 @@ class convertor:
                     "content_preview" : preview_str,
                     "more_element" : more_url_str,
                 }
+                post_dict = dict()
+                post_dict.update(header_dict)
+                post_dict.update(post_detail_dict)
                 if canonical_str in posts_dict.keys():
                     print(F"ERROR: duplicate canonical_str [{canonical_str}]")  # type: ignore
                 else:
@@ -186,14 +188,15 @@ class convertor:
             url_str = url_list[0]
             if header_dict.get("skip","") != "content":
                 url_list.append(F"{self.baseurl_str}/pages{url_str}")
-            page_dict = {
+            page_detail_dict = {
                 "title" : " · ".join([canonical_str,self.base_dict["base_title"]]),
                 "page_title" : canonical_str,
                 "page_urls" : url_list,
                 "page_url" : url_str,
             }
-            if "open_preview" in header_dict.keys():
-                page_dict["open_preview"] = header_dict["open_preview"]
+            page_dict = dict()
+            page_dict.update(header_dict)
+            page_dict.update(page_detail_dict)
             type_list = ["base","layout","frame"]
             type_in_header_list = [n for n in type_list if n in header_dict.keys()]
             type_in_content_list = [n for n in type_in_header_list if header_dict[n] in content_dict.get("frame",dict())]
