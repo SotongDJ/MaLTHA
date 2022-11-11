@@ -121,6 +121,7 @@ class generator:
             post_dict["title"] = self.base_info["base_title"]
             post_dict["layout_content"] = self.get("layout_pagination")
             post_dict["pagination_content_list"] = "".join(pag_list)
+            post_dict["canonical_url"] = F"{self.baseurl_str}{page_hold}"
             if page_num == len(paginate_dict)-1:
                 post_dict["pagination_older_button"] = self.get("format_pagination_older_froze")
             else:

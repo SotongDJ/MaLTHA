@@ -58,6 +58,7 @@ class convertor:
                         "title" : "·".join([category_str,self.base_dict["base_title"]]),
                         "category_title" : category_str,
                         "category_url" : F"{self.baseurl_str}/category/{category_str}/",
+                        "canonical_url" : F"{self.baseurl_str}/category/{category_str}/",
                         "opengraph_description" : self.base_dict["category_preview"].format(category_str),
                     }
                     category_parent_dict[category_str] = category_child_dict
