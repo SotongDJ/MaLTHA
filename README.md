@@ -27,6 +27,11 @@ git submodule update --remote --merge
 cat run/version.txt
 ```
 
+## Changelog
+
+- v0.2.6
+  - adjust code for PEP (pylint)
+
 ## Disclaimer
 
 - pyMoTH still work in progess

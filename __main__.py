@@ -1,9 +1,10 @@
+"""Module providingFunction site generator"""
 import argparse
 from subprocess import call
 
-from convert import convertor
-from format import formator
-from generate import generator
+from convert import Convertor
+from database import Formator
+from generate import Generator
 
 parser = argparse.ArgumentParser(description="generate webpage for github pages")
 parser.add_argument("--skip", help="skip docs process", action="store_true")
@@ -22,16 +23,23 @@ print("step 3: remove mid_files recursively")
 call(["rm","-r","mid_files"])
 
 print("step 4: load include and layout")
-Format = formator()
+Format = Formator()
 Format.load()
 
 print("step 5: convert files into JSONs")
-Convert = convertor(format=Format,baseurl_bool=False) if args.debug else convertor(format=Format)
+if args.debug:
+    Convert = Convertor(fmt=Format,bu_b=False)
+else:
+    Convert = Convertor(fmt=Format)
 Convert.post()
+Convert.category()
+Convert.relate()
+Convert.atom()
 Convert.page()
+Convert.output()
 
 print("step 6: generate webpages from JSONs")
-Generate = generator(format=Format)
+Generate = Generator(fmt=Format)
 print("step 6-1: generate posts")
 Generate.post()
 print("step 6-2: generate pages")
