@@ -29,6 +29,8 @@ cat run/version.txt
 
 ## Changelog
 
+- v0.2.7
+  - use fenced-code-blocks (markdown2)
 - v0.2.6
   - adjust code for PEP (pylint)
 

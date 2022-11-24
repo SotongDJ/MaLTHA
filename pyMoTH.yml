@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages [pyMoTH v0.2.6]
+name: Deploy static content to Pages [pyMoTH v0.2.7]
 
 on:
   # Runs on pushes targeting the default branch

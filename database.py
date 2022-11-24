@@ -25,7 +25,7 @@ class Formator:
                     parsed_dict["header"] = tomlkit.loads(content_str)
                 elif note_dict["type"] == "content":
                     if note_dict["format"] == "md":
-                        current_str = markdown(content_str)
+                        current_str = markdown(content_str,extras=["fenced-code-blocks"])
                     else:
                         current_str = content_str
                     parsed_dict["content"] = current_str
