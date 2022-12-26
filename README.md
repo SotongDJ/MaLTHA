@@ -36,6 +36,12 @@ cat run/version.txt
   - use fenced-code-blocks (markdown2)
 - v0.2.6
   - adjust code for PEP (pylint)
+- v0.2.5
+  - fix canonical_url in categories and pagination
+- v0.2.4
+  - extend support of opengraph meta tag and add validator for trth.nl
+- v0.2.3
+  - change default setting (pyMoTH.yml)
 
 ## Disclaimer
 
