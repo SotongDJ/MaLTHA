@@ -34,6 +34,7 @@ jobs:
         run: |
           # git submodule add https://github.com/SotongDJ/pyMoTH.git run
           git submodule update --init --recursive
+          git submodule set-branch --branch main run
           git submodule update --remote --merge
           cat run/version.txt
       - name: check py requirements

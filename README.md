@@ -22,6 +22,7 @@
 
 ``` bash
 git submodule add https://github.com/SotongDJ/pyMoTH.git run
+git submodule set-branch --branch main run
 git submodule update --init --recursive
 git submodule update --remote --merge
 cat run/version.txt
@@ -29,6 +30,8 @@ cat run/version.txt
 
 ## Changelog
 
+- v0.2.8
+  - add "git submodule set-branch" to README and pyMoTH.yml
 - v0.2.7
   - use fenced-code-blocks (markdown2)
 - v0.2.6
