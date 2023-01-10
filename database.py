@@ -25,7 +25,7 @@ class Formator:
                     parsed_dict["header"] = rtoml.loads(content_str)
                 elif note_dict["type"] == "content":
                     if note_dict["format"] == "md":
-                        current_str = markdown(content_str,extras=["fenced-code-blocks"])
+                        current_str = markdown(content_str,extras=["fenced-code-blocks","tables"])
                     else:
                         current_str = content_str
                     parsed_dict["content"] = current_str
