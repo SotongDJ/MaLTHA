@@ -30,6 +30,8 @@ cat run/version.txt
 
 ## Changelog
 
+- v0.2.10
+  - add "tables" into markdown2 extras
 - v0.2.9
   - use rtoml instead of tomlkit
 - v0.2.8
