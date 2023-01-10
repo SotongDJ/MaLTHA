@@ -1,7 +1,7 @@
 """Module providingFunction prepare dictionary for other scripts"""
 from pathlib import Path
 
-import tomlkit
+import rtoml
 from markdown2 import markdown
 
 
@@ -10,7 +10,7 @@ class Formator:
     def __init__(self) -> None:
         self.structure = {}
         self.base = {}
-        self.base.update(tomlkit.load(open("config.toml",encoding="utf-8")))
+        self.base.update(rtoml.load(open("config.toml",encoding="utf-8")))
     def parse(self,input_str:str) -> dict:
         """parse ToMH into dictionary"""
         parsed_dict = {}
@@ -22,7 +22,7 @@ class Formator:
                 note_list = [n.split(":") for n in note_str.split(" ") if n != ""]
                 note_dict = {x:y for x,y in note_list}
                 if note_dict["type"] == "header":
-                    parsed_dict["header"] = tomlkit.loads(content_str)
+                    parsed_dict["header"] = rtoml.loads(content_str)
                 elif note_dict["type"] == "content":
                     if note_dict["format"] == "md":
                         current_str = markdown(content_str,extras=["fenced-code-blocks"])
@@ -53,7 +53,7 @@ class Formator:
         """export as TOML"""
         Path("mid_files").mkdir(exist_ok=True)
         with open("mid_files/structure.toml","w",encoding="utf-8") as toml_handle:
-            tomlkit.dump(self.structure,toml_handle)
+            rtoml.dump(self.structure,toml_handle)
     def oneline(self,input_str:str) -> str:
         """shrink into one line string"""
         return input_str.replace("\n","").replace("    ","")
