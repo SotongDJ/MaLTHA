@@ -30,6 +30,8 @@ cat run/version.txt
 
 ## Changelog
 
+- v0.2.9
+  - use rtoml instead of tomlkit
 - v0.2.8
   - add "git submodule set-branch" to README and pyMoTH.yml
 - v0.2.7
