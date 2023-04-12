@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages [pyMoTH v0.2.7]
+name: Deploy static content to Pages [MaLTHA v0.3.0]
 
 on:
   # Runs on pushes targeting the default branch
@@ -30,19 +30,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: setup submodule
+      - name: Install MaLTHA
         run: |
-          # git submodule add https://github.com/SotongDJ/pyMoTH.git run
-          git submodule update --init --recursive
-          git submodule set-branch --branch main run
-          git submodule update --remote --merge
-          cat run/version.txt
-      - name: check py requirements
-        run: |
-          pip install -r run/requirements.txt
+          pip install MaLTHA
       - name: run pyToMH
         run: |
-          python3 run
+          python3 -m MaLTHA
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
