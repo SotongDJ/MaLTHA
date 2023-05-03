@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from pathlib import Path, PosixPath
 
-from database import Formator
+from MaLTHA.database import Formator
 
 
 class Convertor:

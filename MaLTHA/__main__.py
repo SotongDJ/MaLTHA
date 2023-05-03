@@ -2,9 +2,9 @@
 import argparse
 from subprocess import call
 
-from convert import Convertor
-from database import Formator
-from generate import Generator
+from MaLTHA.convert import Convertor
+from MaLTHA.database import Formator
+from MaLTHA.generate import Generator
 
 parser = argparse.ArgumentParser(description="generate webpage for github pages")
 parser.add_argument("--skip", help="skip docs process", action="store_true")

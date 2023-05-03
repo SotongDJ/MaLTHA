@@ -21,6 +21,8 @@
 
 ## Changelog
 
+- v0.3.1
+  - modified for the modulization
 - v0.3.0 # still W.I.P.
   - release on PyPI
 - v0.2.10
