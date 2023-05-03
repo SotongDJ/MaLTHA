@@ -4,7 +4,7 @@ import math
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
-from database import Formator
+from MaLTHA.database import Formator
 
 
 class Generator:
