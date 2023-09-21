@@ -8,7 +8,7 @@
 ## Work
 
 - Brief example
-  - [SotongDJ/trth.nl](https://github.com/SotongDJ/trth.nl)
+  - [SotongDJ/redirect](https://github.com/SotongDJ/redirect)
   - under "link" and "*_files" folders: example of TOML/HTML hybrid annotated Markdown files
 - Requirement
   - config.toml
