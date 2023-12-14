@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name = "MaLTHA",
-    version = "0.3.2",
+    version = "0.3.2.1",
     author = "David Soh",
     author_email = "ln@trth.nl",
     description = "MaLTHA works as a static site generator that use Markdown format with TOML/HTML hybrid annotation.",
