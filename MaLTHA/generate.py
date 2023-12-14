@@ -91,7 +91,8 @@ class Generator:
                         target.write(base_str)
     def category(self):
         """generate HTML from dictionary for categories"""
-        for category_dict in self.categories_info.values():
+        for category_str in sorted([n for n in self.categories_info.keys()):
+            category_dict = self.categories_info[category_str]
             base_dict = {}
             base_dict.update(self.fmt.structure)
             base_dict["layout_content"] = self.get("layout_category")

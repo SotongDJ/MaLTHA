@@ -2,7 +2,7 @@ import setuptools
 
 setuptools.setup(
     name = "MaLTHA",
-    version = "0.3.1",
+    version = "0.3.2",
     author = "David Soh",
     author_email = "ln@trth.nl",
     description = "MaLTHA works as a static site generator that use Markdown format with TOML/HTML hybrid annotation.",
@@ -20,6 +20,7 @@ setuptools.setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",

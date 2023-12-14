@@ -133,7 +133,8 @@ class Convertor:
             print(F"ERROR: duplicate id; {dup_l}")
     def category(self):
         """prepare categories"""
-        for category_str,detl_d in self.cts_d.items():
+        for category_str in sorted([n for n in self.cts_d.keys()]):
+            detl_d = self.cts_d[category_str]
             content_list = []
             section_list = []
             for member_dict in detl_d["member"].values():
