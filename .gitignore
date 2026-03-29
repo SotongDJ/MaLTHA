@@ -1,6 +1,10 @@
 # settings
 docs/
 
+# review
+_review/
+_testrun/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

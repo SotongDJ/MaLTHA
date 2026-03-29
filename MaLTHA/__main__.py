@@ -1,6 +1,6 @@
 """Module providingFunction site generator"""
 import argparse
-from subprocess import call
+import shutil
 
 from MaLTHA.convert import Convertor
 from MaLTHA.database import Formator
@@ -26,12 +26,12 @@ if args.skip:
     print("note: skip step 1 and step 2")
 else:
     print("step 1: remove docs recursively")
-    call(["rm","-r","docs"])
+    shutil.rmtree("docs", ignore_errors=True)
     print("step 2: copy static_files as docs recursively")
-    call(["cp","-r","static_files","docs"])
+    shutil.copytree("static_files", "docs")
 
 print("step 3: remove mid_files recursively")
-call(["rm","-r","mid_files"])
+shutil.rmtree("mid_files", ignore_errors=True)
 
 print("step 4: load include and layout")
 Format = Formator()

@@ -8,11 +8,14 @@ from MaLTHA.database import Formator
 
 class Convertor:
     """convert"""
-    def __init__(self,bu_b=True,fmt=Formator()):
-        self.fmt = fmt
+    def __init__(self,bu_b=True,fmt=None):
+        self.fmt = fmt if fmt is not None else Formator()
         self.bs_d = {}
         self.bs_d.update(self.fmt.base)
         self.bu_s = self.bs_d["base_url"] if bu_b else str()
+        if not bu_b:
+            self.bs_d["base_url"] = str()
+        self.exclude_dirs = self.bs_d.get("exclude_dirs", [])
         self.pos_l = [] # posts_list
         self.cts_d = {} # categories_dict
         self.cts_c_l = [] # categories_content_list
@@ -28,7 +31,9 @@ class Convertor:
             output = False
         if "_files" in folder_name:
             output = False
-        if folder_name in {"docs","run"}:
+        if folder_name in {"docs","run","mid_files"}:
+            output = False
+        if folder_name in self.exclude_dirs:
             output = False
         return output
     def json(self,input_obj,target_path):
@@ -78,14 +83,27 @@ class Convertor:
             if self.is_target(post_folder_posix_path):
                 post_paths.extend(sorted(list(post_folder_posix_path.glob('*.*'))))
         return post_paths
+    def validate_post_header(self, head_d: dict, file_path) -> None:
+        """Validate required TOML frontmatter fields, raise with file path on error"""
+        required_fields = ["date", "categories", "short", "title"]
+        missing = [f for f in required_fields if f not in head_d]
+        if missing:
+            raise ValueError(
+                f"Missing required fields {missing} in {file_path}"
+            )
     def post(self):
         """convert func. for post"""
         for post_path in self.path():
             name_list = post_path.name.split(".")
             if len(name_list) > 1 and name_list[-1] in ["md","html"]:
-                content_dict = self.fmt.parse(open(post_path,"r",encoding="utf-8").read())
+                with open(post_path, "r", encoding="utf-8") as f:
+                    content_dict = self.fmt.parse(f.read())
+                if "header" not in content_dict:
+                    print(f"WARN: skipping {post_path} (no TOML header found)")
+                    continue
                 head_d = {}
                 head_d.update(content_dict["header"])
+                self.validate_post_header(head_d, post_path)
                 date_obj = datetime.fromisoformat(head_d["date"])
                 dt_s = date_obj.strftime("%Y/%m/%d")
                 # ct_p_d: category_parent_dict
@@ -126,11 +144,27 @@ class Convertor:
                 self.pos_l.append(po_d)
         self.check_post()
     def check_post(self):
-        """Check post if duplicate or not"""
+        """Check post if duplicate or not; halt on duplicates unless auto-fix enabled"""
         pos_l = [post_dict["short_canonical"] for post_dict in self.pos_l]
         dup_l = [po for po in set(pos_l) if pos_l.count(po) > 1]
         if len(dup_l) > 0:
-            print(F"ERROR: duplicate id; {dup_l}")
+            auto_fix = self.bs_d.get("auto_fix_duplicate", False)
+            if auto_fix:
+                for dup_id in dup_l:
+                    count = 0
+                    for i, post_dict in enumerate(self.pos_l):
+                        if post_dict["short_canonical"] == dup_id:
+                            if count > 0:
+                                new_id = f"{dup_id}-{count}"
+                                print(f"AUTO-FIX: renaming duplicate '{dup_id}' → '{new_id}'")
+                                self.pos_l[i]["short_canonical"] = new_id
+                                self.pos_l[i]["short_list"] = [new_id] + post_dict["short_list"][1:]
+                            count += 1
+            else:
+                raise ValueError(
+                    f"Duplicate post IDs found: {dup_l}. "
+                    f"Set auto_fix_duplicate = true in config.toml to auto-rename."
+                )
     def category(self):
         """prepare categories"""
         for category_str in sorted([n for n in self.cts_d.keys()]):
@@ -185,7 +219,8 @@ class Convertor:
     def page(self):
         """convert func. for page"""
         for page_path in sorted(list(Path("page_files").glob('*.*'))):
-            content_dict = self.fmt.parse(open(page_path,encoding="utf-8").read())
+            with open(page_path, encoding="utf-8") as f:
+                content_dict = self.fmt.parse(f.read())
             head_d = {}
             head_d.update(content_dict["header"])
             url_l = [self.bu_s+F"{n}" for n in head_d["path"]]

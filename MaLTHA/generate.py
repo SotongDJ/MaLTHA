@@ -1,6 +1,7 @@
 """Module providingFunction convert JSON into HTML"""
 import json
 import math
+import re
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -9,15 +10,29 @@ from MaLTHA.database import Formator
 
 class Generator:
     """generator"""
-    def __init__(self,fmt=Formator()) -> None:
-        self.base_info = json.load(open("mid_files/base.json",encoding="utf-8"))
-        self.categories_info = json.load(open("mid_files/categories.json",encoding="utf-8"))
-        self.pages_dict = json.load(open("mid_files/page.json",encoding="utf-8"))
-        self.posts_list = json.load(open("mid_files/post.json",encoding="utf-8"))
-        self.fmt = fmt
-        tz_element = timezone(timedelta(hours=8),name="UTC+8")
+    def __init__(self,fmt=None) -> None:
+        with open("mid_files/base.json", encoding="utf-8") as f:
+            self.base_info = json.load(f)
+        with open("mid_files/categories.json", encoding="utf-8") as f:
+            self.categories_info = json.load(f)
+        with open("mid_files/page.json", encoding="utf-8") as f:
+            self.pages_dict = json.load(f)
+        with open("mid_files/post.json", encoding="utf-8") as f:
+            self.posts_list = json.load(f)
+        self.fmt = fmt if fmt is not None else Formator()
+        tz_hours = self.base_info.get("timezone_offset", 8)
+        tz_name = self.base_info.get("timezone_name", f"UTC+{tz_hours}")
+        tz_element = timezone(timedelta(hours=tz_hours), name=tz_name)
         self.cur_iso = datetime.now(tz=tz_element).isoformat()  # type: ignore
         print(F"Current time: {self.cur_iso}")
+    @staticmethod
+    def escape_code_blocks(html_str: str) -> str:
+        """Escape { and } inside <code>/<pre> blocks to {{ and }} before .format()"""
+        def escape_match(m):
+            return m.group(0).replace("{", "{{").replace("}", "}}")
+        html_str = re.sub(r"<pre[^>]*>.*?</pre>", escape_match, html_str, flags=re.DOTALL)
+        html_str = re.sub(r"<code[^>]*>.*?</code>", escape_match, html_str, flags=re.DOTALL)
+        return html_str
     def get(self,input_str:str) -> str:
         """grab dictionary from fmt.structure"""
         return self.fmt.structure[input_str]
@@ -34,7 +49,7 @@ class Generator:
             base_dict.update(self.base_info)
             base_dict.update(post_dict)
             base_dict["canonical_url"] = post_dict["post_url"]
-            base_dict["post_content"] = post_dict["content_full"]
+            base_dict["post_content"] = self.escape_code_blocks(post_dict["content_full"])
             base_str = self.get("layout_default").format(**base_dict).format(**base_dict)
             base_str = base_str.replace("{{","{").replace("}}","}")
             short_canonical_str = post_dict["short_canonical"]
@@ -58,6 +73,8 @@ class Generator:
                 base_dict.update(page_dict)
                 base_dict["canonical_url"] = page_dict["page_url"]
                 base_dict["current_iso8601"] = self.cur_iso
+                if "page_content" in base_dict:
+                    base_dict["page_content"] = self.escape_code_blocks(base_dict["page_content"])
                 if "base" in base_dict:
                     frame_str = base_dict["page_content"]
                 else:

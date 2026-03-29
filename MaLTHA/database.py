@@ -10,7 +10,8 @@ class Formator:
     def __init__(self) -> None:
         self.structure = {}
         self.base = {}
-        self.base.update(rtoml.load(open("config.toml",encoding="utf-8")))
+        with open("config.toml", encoding="utf-8") as f:
+            self.base.update(rtoml.load(f))
     def parse(self,input_str:str) -> dict:
         """parse ToMH into dictionary"""
         parsed_dict = {}
@@ -45,7 +46,8 @@ class Formator:
         for folder_str in ["include_files","layout_files","page_files"]:
             target_list.extend(sorted(list(Path(folder_str).glob('*.*ml'))))
         for target_path in target_list:
-            target_dict = self.parse(open(target_path,encoding="utf-8").read())
+            with open(target_path, encoding="utf-8") as f:
+                target_dict = self.parse(f.read())
             for t_str in ["include","layout","format"]:
                 if t_str in target_dict:
                     self.structure.update({F"{t_str}_{x}":y for x,y in target_dict[t_str].items()})
