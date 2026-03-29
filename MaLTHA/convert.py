@@ -159,6 +159,20 @@ class Convertor:
                                 print(f"AUTO-FIX: renaming duplicate '{dup_id}' → '{new_id}'")
                                 self.pos_l[i]["short_canonical"] = new_id
                                 self.pos_l[i]["short_list"] = [new_id] + post_dict["short_list"][1:]
+                                # Regenerate URLs from the new short ID
+                                cts_s = "/".join(post_dict["categories"])
+                                dt_s = datetime.fromisoformat(post_dict["date_iso"]).strftime("%Y/%m/%d")
+                                new_urls = [
+                                    self.bu_s + f"/{cts_s}/{dt_s}/{new_id}/",
+                                    self.bu_s + f"/{cts_s}/{new_id}/",
+                                    self.bu_s + f"/{dt_s}/{new_id}/",
+                                    self.bu_s + f"/{new_id}/",
+                                    self.bu_s + f"/post/{new_id}/",
+                                ]
+                                new_post_url = self.bu_s + f"/{dt_s}/{new_id}/"
+                                self.pos_l[i]["post_urls"] = new_urls
+                                self.pos_l[i]["post_url"] = new_post_url
+                                self.pos_l[i]["more_element"] = f'<a href="{new_post_url}">{post_dict["more_element"].split(">")[1].split("<")[0]}</a>'
                             count += 1
             else:
                 raise ValueError(
@@ -221,8 +235,15 @@ class Convertor:
         for page_path in sorted(list(Path("page_files").glob('*.*'))):
             with open(page_path, encoding="utf-8") as f:
                 content_dict = self.fmt.parse(f.read())
+            if "header" not in content_dict:
+                print(f"WARN: skipping {page_path} (no header found)")
+                continue
             head_d = {}
             head_d.update(content_dict["header"])
+            page_required = ["title", "path"]
+            page_missing = [f for f in page_required if f not in head_d]
+            if page_missing:
+                raise ValueError(f"Missing required fields {page_missing} in {page_path}")
             url_l = [self.bu_s+F"{n}" for n in head_d["path"]]
             url_str = url_l[0]
             if head_d.get("skip","") != "content":

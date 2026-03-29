@@ -26,12 +26,13 @@ class Generator:
         self.cur_iso = datetime.now(tz=tz_element).isoformat()  # type: ignore
         print(F"Current time: {self.cur_iso}")
     @staticmethod
-    def escape_code_blocks(html_str: str) -> str:
-        """Escape { and } inside <code>/<pre> blocks to {{ and }} before .format()"""
+    def escape_code_blocks(html_str: str, passes: int = 2) -> str:
+        """Escape { and } inside <pre> blocks to survive N .format() passes"""
+        brace_open = "{" * (2 ** passes)
+        brace_close = "}" * (2 ** passes)
         def escape_match(m):
-            return m.group(0).replace("{", "{{").replace("}", "}}")
+            return m.group(0).replace("{", brace_open).replace("}", brace_close)
         html_str = re.sub(r"<pre[^>]*>.*?</pre>", escape_match, html_str, flags=re.DOTALL)
-        html_str = re.sub(r"<code[^>]*>.*?</code>", escape_match, html_str, flags=re.DOTALL)
         return html_str
     def get(self,input_str:str) -> str:
         """grab dictionary from fmt.structure"""
@@ -74,7 +75,9 @@ class Generator:
                 base_dict["canonical_url"] = page_dict["page_url"]
                 base_dict["current_iso8601"] = self.cur_iso
                 if "page_content" in base_dict:
-                    base_dict["page_content"] = self.escape_code_blocks(base_dict["page_content"])
+                    has_extra_pass = "frame" in page_dict or "layout" in page_dict
+                    n_passes = 3 if has_extra_pass else 2
+                    base_dict["page_content"] = self.escape_code_blocks(base_dict["page_content"], passes=n_passes)
                 if "base" in base_dict:
                     frame_str = base_dict["page_content"]
                 else:
