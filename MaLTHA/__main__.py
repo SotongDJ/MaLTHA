@@ -6,9 +6,20 @@ from MaLTHA.convert import Convertor
 from MaLTHA.database import Formator
 from MaLTHA.generate import Generator
 
-parser = argparse.ArgumentParser(description="generate webpage for github pages")
-parser.add_argument("--skip", help="skip docs process", action="store_true")
-parser.add_argument("--debug", help="debug mode", action="store_true")
+parser = argparse.ArgumentParser(
+    prog="python -m MaLTHA",
+    description="MaLTHA static site generator — converts Markdown/HTML content into a deployable website.",
+)
+parser.add_argument(
+    "--skip",
+    help="skip steps 1-2: do not clear and rebuild docs/ from static_files/",
+    action="store_true",
+)
+parser.add_argument(
+    "--debug",
+    help="disable base_url substitution (useful for inspecting output locally)",
+    action="store_true",
+)
 args = parser.parse_args()
 
 if args.skip:
