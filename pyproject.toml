@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=64,<77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "MaLTHA"
+version = "0.4.0"
+description = "MaLTHA works as a static site generator that use Markdown format with TOML/HTML hybrid annotation."
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9"
+authors = [
+    { name = "David Soh", email = "ln@trth.nl" },
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "rtoml",
+    "markdown2",
+    "Pygments",
+]
+
+[project.urls]
+Homepage = "https://github.com/SotongDJ/MaLTHA"
